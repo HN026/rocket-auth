@@ -1,0 +1,19 @@
+[default]
+address = "0.0.0.0"
+port = 8000
+log_level = "normal"
+
+[development]
+address = "127.0.0.1"
+port = 8000
+log_level = "debug"
+
+[production]
+address = "0.0.0.0"
+port = 8000
+log_level = "critical"
+
+[default.databases.pg_database]
+url = "postgresql://rocketdb_owner:LFB43fUXeGIa@ep-wild-unit-a1a6zye0.ap-southeast-1.aws.neon.tech/rocketdb?sslmode=require"
+pool = 10  # Adjust as per your application's needs
+wait_timeout = 6000  # Increase timeout if needed
