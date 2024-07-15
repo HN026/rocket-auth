@@ -6,6 +6,11 @@ use diesel::insert_into;
 use diesel::prelude::*;
 use rocket::serde::json::Json;
 
+#[get("/")]
+pub fn healthcheck() -> &'static str {
+    "Hello, world!"
+}
+
 #[post("/signup", format = "json", data = "<signup_user>")]
 pub async fn signup<'a>(
     conn: DbConn,

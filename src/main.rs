@@ -11,7 +11,7 @@ mod models;
 mod schema;
 
 use database::database::{establish_connection, DbConn};
-use handler::handler::{signin, signup};
+use handler::handler::{healthcheck, signin, signup};
 
 #[launch]
 fn rocket() -> _ {
@@ -27,6 +27,6 @@ fn rocket() -> _ {
     }
 
     rocket::custom(figment)
-        .mount("/", routes![signup, signin])
+        .mount("/", routes![signup, signin, healthcheck])
         .attach(DbConn::fairing())
 }
