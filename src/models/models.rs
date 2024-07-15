@@ -1,5 +1,5 @@
 use crate::schema::users;
-use rocket::serde::{Serialize, Deserialize};
+use rocket::serde::{Deserialize, Serialize};
 
 #[derive(Queryable, Serialize)]
 pub struct User {

@@ -4,9 +4,7 @@ extern crate rocket;
 extern crate diesel;
 extern crate dotenv;
 
-use bcrypt::{hash, verify, DEFAULT_COST};
 use dotenv::dotenv;
-use rocket::serde::json::Json;
 mod database;
 mod handler;
 mod models;
@@ -32,4 +30,3 @@ fn rocket() -> _ {
         .mount("/", routes![signup, signin])
         .attach(DbConn::fairing())
 }
-

@@ -14,5 +14,5 @@ port = 8000
 log_level = "critical"
 
 [default.databases.pg_database]
-pool = 10           # Adjust as per your application's needs
-wait_timeout = 6000 # Increase timeout if needed
+pool_size = 10
+timeout = 10 

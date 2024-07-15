@@ -72,4 +72,3 @@ pub async fn signin<'a>(conn: DbConn, login_info: Json<LoginUser<'a>>) -> Json<O
         _ => Json(None),
     }
 }
-
