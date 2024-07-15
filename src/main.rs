@@ -4,28 +4,32 @@ extern crate rocket;
 extern crate diesel;
 extern crate dotenv;
 
-use rocket::serde::json::Json;
-use dotenv::dotenv;
 use bcrypt::{hash, verify, DEFAULT_COST};
-mod schema;
-mod models;
+use dotenv::dotenv;
+use rocket::serde::json::Json;
 mod database;
 mod handler;
+mod models;
+mod schema;
 
 use database::database::{establish_connection, DbConn};
-use handler::handler::{signup, signin};
-
+use handler::handler::{signin, signup};
 
 #[launch]
 fn rocket() -> _ {
     dotenv().ok();
+    let figment = rocket::Config::figment().merge((
+        "databases.pg_database.url",
+        std::env::var("DATABASE_URL").expect("DATABASE_URL must be set"),
+    ));
 
     match establish_connection() {
         Ok(_) => println!("Successful connection to the database"),
         Err(e) => panic!("Failed to connect to the database: {:?}", e),
     }
 
-    rocket::build()
+    rocket::custom(figment)
+        .mount("/", routes![signup, signin])
         .attach(DbConn::fairing())
-        .mount("/", routes![signup,signin])
 }
+
