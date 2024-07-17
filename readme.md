@@ -24,11 +24,17 @@ Before running the application, ensure you have the following installed:
 2. **Set up environment variables:**
    Create a .env file in the root directory of the project and add the necessary environment variables:
 
-   ```bash
+   ```env
    DATABASE_URL=postgres://myuser:mysecretpassword@localhost/mydatabase
    ```
 
    Replace myuser, mysecretpassword, and mydatabase with the credentials and database name specified in your Docker Compose file.
+
+   Additionally, for JWT token generation, you must add a `SECRET_KEY` to your `.env` file. This key is crucial for securing your JWT tokens. Here's how you can add it:
+
+   ```env
+   SECRET_KEY=your_secret_key_here
+   ```
 
 3. **Run diesel migrations to setup database**
 

@@ -1,4 +1,5 @@
 use crate::database::database::DbConn;
+use crate::jwt::jwt::generate_token;
 use crate::models::models::{LoginUser, NewUser, SignupUser, User};
 use crate::schema::users::dsl::*;
 use bcrypt::{hash, verify, DEFAULT_COST};
@@ -15,8 +16,7 @@ pub fn healthcheck() -> &'static str {
 pub async fn signup<'a>(
     conn: DbConn,
     signup_user: Json<SignupUser<'a>>,
-) -> Json<Result<User, String>> {
-    println!("IN SIGNUP fn");
+) -> Json<Result<String, String>> {
     let hashed_password = match hash(signup_user.password, DEFAULT_COST) {
         Ok(hp) => hp,
         Err(_) => return Json(Err("Failed to hash password".into())),
@@ -39,7 +39,11 @@ pub async fn signup<'a>(
         .await;
 
     match result {
-        Ok(user) => Json(Ok(user)),
+        Ok(user) => {
+            let token = generate_token(&user.username)
+                .unwrap_or_else(|_| "Failed to generate token".to_string());
+            Json(Ok(token))
+        }
         Err(err) => {
             eprintln!("Error saving new user: {:?}", err);
             Json(Err("Error saving new user".into()))
@@ -48,10 +52,11 @@ pub async fn signup<'a>(
 }
 
 #[post("/signin", format = "json", data = "<login_info>")]
-pub async fn signin<'a>(conn: DbConn, login_info: Json<LoginUser<'a>>) -> Json<Option<User>> {
-    println!("IN SIGNIN fn");
+pub async fn signin<'a>(
+    conn: DbConn,
+    login_info: Json<LoginUser<'a>>,
+) -> Json<Result<String, String>> {
     let username_clone = login_info.username.to_string();
-    let password_clone = login_info.password.to_string();
 
     let result = conn
         .run(move |c| {
@@ -64,16 +69,18 @@ pub async fn signin<'a>(conn: DbConn, login_info: Json<LoginUser<'a>>) -> Json<O
 
     match result {
         Ok(Some(user)) => {
-            if verify(&password_clone, &user.password_hash).unwrap_or(false) {
-                Json(Some(user))
+            if verify(&login_info.password, &user.password_hash).unwrap_or(false) {
+                let token = generate_token(&user.username)
+                    .unwrap_or_else(|_| "Failed to generate token".to_string());
+                Json(Ok(token))
             } else {
-                Json(None)
+                Json(Err("Invalid credentials".into()))
             }
         }
+        Ok(None) => Json(Err("Invalid credentials".into())),
         Err(err) => {
             eprintln!("Error during sign in: {:?}", err);
-            Json(None)
+            Json(Err("Error during sign in".into()))
         }
-        _ => Json(None),
     }
 }
