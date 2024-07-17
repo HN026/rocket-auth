@@ -1,9 +1,10 @@
 use crate::schema::users;
 use rocket::serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Queryable, Serialize)]
 pub struct User {
-    pub id: i32,
+    pub id: Uuid,
     pub username: String,
     pub email: String,
     pub password_hash: String,

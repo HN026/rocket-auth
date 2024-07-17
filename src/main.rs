@@ -7,6 +7,7 @@ extern crate dotenv;
 use dotenv::dotenv;
 mod database;
 mod handler;
+mod jwt;
 mod models;
 mod schema;
 
