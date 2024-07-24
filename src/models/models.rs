@@ -8,6 +8,8 @@ pub struct User {
     pub username: String,
     pub email: String,
     pub password_hash: String,
+    pub otp_secret: String,
+    pub otp_verified: Option<bool>,
 }
 
 #[derive(Insertable, Deserialize)]
@@ -16,6 +18,8 @@ pub struct NewUser<'a> {
     pub username: &'a str,
     pub email: &'a str,
     pub password_hash: &'a str,
+    pub otp_secret: &'a str,
+    pub otp_verified: bool,
 }
 
 #[derive(Deserialize)]
@@ -29,4 +33,9 @@ pub struct SignupUser<'a> {
 pub struct LoginUser<'a> {
     pub username: &'a str,
     pub password: &'a str,
+}
+#[derive(Deserialize)]
+pub struct OtpVerification<'a> {
+    pub username: &'a str,
+    pub otp: &'a str,
 }
