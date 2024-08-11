@@ -6,5 +6,7 @@ diesel::table! {
         username -> Varchar,
         email -> Varchar,
         password_hash -> Varchar,
+        otp_secret -> Varchar,
+        otp_verified -> Nullable<Bool>,
     }
 }
