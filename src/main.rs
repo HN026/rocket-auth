@@ -12,7 +12,7 @@ mod models;
 mod schema;
 
 use database::database::{establish_connection, DbConn};
-use handler::handler::{google_oauth, healthcheck, signin, signup};
+use handler::handler::{healthcheck, signin, signup, google_oauth, verify_otp};
 
 #[launch]
 fn rocket() -> _ {
@@ -28,6 +28,6 @@ fn rocket() -> _ {
     }
 
     rocket::custom(figment)
-        .mount("/", routes![signup, signin, healthcheck, google_oauth])
+        .mount("/", routes![signup, signin, healthcheck, google_oauth, verify_otp])
         .attach(DbConn::fairing())
 }
